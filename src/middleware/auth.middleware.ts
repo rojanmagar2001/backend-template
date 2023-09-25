@@ -64,8 +64,7 @@ export const hasAccessRights = async (req: Request, res: Response, next: NextFun
       },
     });
 
-    if (user === null || user.role === undefined || user.role?.permissions === undefined)
-      throw new HttpException(HTTPSTATUS.UNAUTHORIZED, 'Not Authorized');
+    if (user?.role?.permissions === undefined) throw new HttpException(HTTPSTATUS.UNAUTHORIZED, 'Not Authorized');
 
     const permissions = user.role.permissions;
 
