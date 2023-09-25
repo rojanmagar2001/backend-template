@@ -10,3 +10,8 @@ export interface CreateParams<T> {
 export interface GetParams {
   id: string;
 }
+
+export interface GetAllParams {
+  page?: string;
+  limit?: string;
+}

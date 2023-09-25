@@ -5,7 +5,7 @@ import { type NextFunction, type Request, type Response } from 'express';
 import { AdminPrisma } from '@/loaders/prisma';
 import { JWT_SECRET } from '@/loaders/env';
 
-export const isAuthorized = async (req: Request, res: Response, next: NextFunction) => {
+export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies['access-token'];
 
@@ -35,7 +35,7 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const hasAccessRights = async (req: Request, res: Response, next: NextFunction) => {
+export const isAuthorized = async (req: Request, res: Response, next: NextFunction) => {
   const path = req.path;
   const method = req.method;
 

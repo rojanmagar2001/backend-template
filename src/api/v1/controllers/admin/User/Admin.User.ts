@@ -19,6 +19,20 @@ const create = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
-const AdminUserController = { create };
+const getAll = asyncHandler(async (req: Request, res: Response) => {
+  const page = req.query.page as string | undefined;
+  const limit = req.query.limit as string | undefined;
+
+  const { users, docs } = await AdminUserService.getAll({ page, limit });
+
+  return res.send(
+    new HttpResponse({
+      data: users,
+      docs,
+    }),
+  );
+});
+
+const AdminUserController = { create, getAll };
 
 export default AdminUserController;

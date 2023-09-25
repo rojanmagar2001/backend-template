@@ -4,6 +4,7 @@ interface HttpResponseProps {
   message?: string;
   statusCode?: HTTPSTATUS;
   data?: Record<string, unknown> | unknown[];
+  docs?: Record<string, unknown>;
 }
 
 class HttpResponse {

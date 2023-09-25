@@ -1,8 +1,9 @@
 import { type UserCreateInput } from '@/api/v1/validators/admin/User/User.Validator';
 import { HTTPSTATUS } from '@/enums/HttpStatus.enum';
-import { type CreateParams } from '@/interfaces/services/Admin.Interface';
+import { type GetAllParams, type CreateParams } from '@/interfaces/services/Admin.Interface';
 import { AdminPrisma } from '@/loaders/prisma';
 import HttpException from '@/utils/HttpException';
+import { getPageDocs, pagination } from '@/utils/Pagination';
 import bcrypt from 'bcrypt';
 
 const create = async (data: CreateParams<UserCreateInput>) => {
@@ -46,6 +47,25 @@ const create = async (data: CreateParams<UserCreateInput>) => {
   return user;
 };
 
-const AdminUserService = { create };
+const getAll = async (data: GetAllParams) => {
+  const { page, limit, skip } = pagination(data);
+
+  const [users, count] = await Promise.all([
+    AdminPrisma.user.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: limit,
+      skip,
+    }),
+    AdminPrisma.user.count(),
+  ]);
+
+  const docs = getPageDocs({ page, limit, count });
+
+  return { users, docs };
+};
+
+const AdminUserService = { create, getAll };
 
 export default AdminUserService;

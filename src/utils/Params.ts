@@ -8,3 +8,11 @@ export const toNumber = (data: string): number | false => {
     return false;
   }
 };
+
+export const parseIds = (data: string[]) => {
+  try {
+    return data.map((id) => parseInt(id));
+  } catch (err) {
+    return false;
+  }
+};
