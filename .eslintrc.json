@@ -1,0 +1,32 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "extends": ["standard-with-typescript", "plugin:prettier/recommended"],
+    "plugins": ["prettier", "no-loops"],
+    "overrides": [],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "project": "./tsconfig.json"
+    },
+    "rules": {
+        "prettier/prettier": ["error"],
+        "@typescript-eslint/explicit-function-return-type": 0,
+        "@typescript-eslint/strict-boolean-expressions": 0,
+        "@typescript-eslint/indent": ["error", 2],
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/naming-convention": [
+            "error",
+            {
+                "selector": ["function"],
+                "format": ["camelCase"]
+            }
+        ],
+        "no-loops/no-loops": 2,
+        "@typescript-eslint/no-misused-promises": 0
+    }
+}

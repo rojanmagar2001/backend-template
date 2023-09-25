@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccessRight {
+  readonly
+  readandwriteonly
+  readwriteanddelete
+}
+
+model Permission {
+  id          Int         @id @default(autoincrement())
+  name        String
+  access      AccessRight
+  role        Role        @relation(fields: [roleId], references: [id])
+  roleId      Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  createdBy   User?       @relation("PermissionCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById Int?
+  updatedBy   User?       @relation("PermissionUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  updatedById Int?
+
+  @@unique([roleId, name], name: "permissionIdentifier")
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  permissions Permission[]
+  users       User[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdBy   User?        @relation("RoleCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById Int?
+  updatedBy   User?        @relation("RoleUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  updatedById Int?
+}
+
+model User {
+  id                Int          @id @default(autoincrement())
+  name              String
+  contact           String
+  dob               DateTime
+  username          String       @unique
+  email             String       @unique
+  password          String
+  image             String?
+  role              Role         @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  roleId            Int
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  permissionCreated Permission[] @relation("PermissionCreatedBy")
+  permissionUpdated Permission[] @relation("PermissionUpdatedBy")
+  roleCreated       Role[]       @relation("RoleCreatedBy")
+  roleUpdated       Role[]       @relation("RoleUpdatedBy")
+}
