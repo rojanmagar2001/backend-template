@@ -58,8 +58,14 @@ model User {
   roleId            Int
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
+  createdBy         User?        @relation("UserCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById       Int?
+  updatedBy         User?        @relation("UserUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  updatedById       Int?
   permissionCreated Permission[] @relation("PermissionCreatedBy")
   permissionUpdated Permission[] @relation("PermissionUpdatedBy")
   roleCreated       Role[]       @relation("RoleCreatedBy")
   roleUpdated       Role[]       @relation("RoleUpdatedBy")
+  userCreated       User[]       @relation("UserCreatedBy")
+  userUpdated       User[]       @relation("UserUpdatedBy")
 }
