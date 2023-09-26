@@ -32,10 +32,13 @@ const login = async (data: UserLoginInput) => {
 
   if (!comparePassword) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid Credentials');
 
-  const token = generateToken({ id: validUser.id, expiresIn: '7d' });
+  const accessToken = generateToken({ id: validUser.id, type: 'access' });
+
+  const refreshToken = generateToken({ id: validUser.id, type: 'refresh' });
 
   return {
-    token,
+    accessToken,
+    refreshToken,
     permissions: validUser.role?.permissions,
   };
 };

@@ -3,14 +3,14 @@ import HttpException from '@/utils/HttpException';
 import jwt from 'jsonwebtoken';
 import { type NextFunction, type Request, type Response } from 'express';
 import { AdminPrisma } from '@/loaders/prisma';
-import { JWT_SECRET } from '@/loaders/env';
+import { JWT_ACCESS_SECRET } from '@/loaders/env';
 
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies['access-token'];
 
     try {
-      const decode = jwt.verify(token, JWT_SECRET) as { id: number };
+      const decode = jwt.verify(token, JWT_ACCESS_SECRET) as { id: number };
 
       const user = await AdminPrisma.user.findUnique({
         where: { id: decode.id },

@@ -8,11 +8,18 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 
   const data = await Service.login(postData);
 
-  res.cookie('access-token', data.token, {
+  res.cookie('access-token', data.accessToken, {
     secure: true,
     sameSite: 'lax',
     httpOnly: true,
     maxAge: 604800000, // 7 days
+  });
+
+  res.cookie('refresh-token', data.refreshToken, {
+    secure: true,
+    sameSite: 'lax',
+    httpOnly: true,
+    maxAge: 2 * 604800000,
   });
 
   return res.send(

@@ -1,13 +1,17 @@
-import { JWT_SECRET } from '@/loaders/env';
+import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from '@/loaders/env';
 import jwt from 'jsonwebtoken';
 
 interface GenerateTokenProps {
   id: number;
-  expiresIn: string;
+  type: 'access' | 'refresh';
 }
 
 export function generateToken(data: GenerateTokenProps) {
-  const { id, expiresIn } = data;
+  const { id, type } = data;
 
-  return jwt.sign({ id }, JWT_SECRET, { expiresIn });
+  if (type === 'access') {
+    return jwt.sign({ id }, JWT_ACCESS_SECRET, { expiresIn: '15m' });
+  }
+
+  return jwt.sign({ id }, JWT_REFRESH_SECRET, { expiresIn: '7d' });
 }
