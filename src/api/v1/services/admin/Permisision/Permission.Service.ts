@@ -1,8 +1,12 @@
-import { type PermissionCreateInput } from '@/api/v1/validators/admin/Permission/Permission.Validator';
+import {
+  type PermissionUpdateInput,
+  type PermissionCreateInput,
+} from '@/api/v1/validators/admin/Permission/Permission.Validator';
 import { HTTPSTATUS } from '@/enums/HttpStatus.enum';
-import { type CreateParams } from '@/interfaces/services/Admin.Interface';
+import { type UpdateParams, type CreateParams, type DeleteParams } from '@/interfaces/services/Admin.Interface';
 import { AdminPrisma } from '@/loaders/prisma';
 import HttpException from '@/utils/HttpException';
+import { toNumber } from '@/utils/Params';
 
 const create = async (data: CreateParams<PermissionCreateInput>) => {
   const { postData } = data;
@@ -40,6 +44,62 @@ const create = async (data: CreateParams<PermissionCreateInput>) => {
   return permission;
 };
 
-const AdminPermissionService = { create };
+const updatedById = async (data: UpdateParams<PermissionUpdateInput>) => {
+  const { postData, loggedUserData } = data;
+  const { name } = postData;
+
+  const id = toNumber(data.id);
+
+  if (!id) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid Permission Id');
+
+  const validPermission = await AdminPrisma.permission.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!validPermission) throw new HttpException(HTTPSTATUS.NOTFOUND, 'Permission does not exist');
+
+  if (name !== undefined && name !== validPermission.name) {
+    const alreadyExist = await AdminPrisma.permission.findUnique({
+      where: {
+        permissionIdentifier: {
+          name,
+          roleId: validPermission.roleId,
+        },
+      },
+    });
+
+    if (alreadyExist) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Same permission already exist in role');
+  }
+
+  const permission = await AdminPrisma.permission.update({
+    where: {
+      id,
+    },
+    data: {
+      ...postData,
+      updatedById: loggedUserData?.id,
+    },
+  });
+
+  return permission;
+};
+
+const deleteById = async (data: DeleteParams) => {
+  const id = toNumber(data.id);
+
+  if (!id) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid Permission Id');
+
+  const permission = await AdminPrisma.permission.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return permission;
+};
+
+const AdminPermissionService = { create, updatedById, deleteById };
 
 export default AdminPermissionService;

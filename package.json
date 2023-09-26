@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "dotenv -e development.env -- ts-node-dev --respawn -r tsconfig-paths/register src/index.ts",
-    "start": "dotenv -e development.env node -r module-alias/register dist/index.js",
+    "start": "dotenv -e development.env node -r module-alias/register dist/src/index.js",
     "lint": "eslint src/**/*.ts --config .eslintrc.json",
     "lint:fix": "eslint src/**/*.ts --fix --config .eslintrc.json",
     "build:dev": "rm -rf ./dist && tsc",
     "dbpush:dev": "dotenv -e development.env -- prisma db push",
-    "dbstudio:dev": "dotenv -e development.env -- prisma studio"
+    "dbstudio:dev": "dotenv -e development.env -- prisma studio",
+    "seed:dev": "dotenv -e development.env -- node dist/prisma/seed.js"
   },
   "_moduleAliases": {
     "@": "dist/src",

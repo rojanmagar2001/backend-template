@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function script() {
-  const password = await bcrypt.hash('Test@123', 10);
+  const password = await bcrypt.hash('Admin@123', 10);
   await prisma.user.create({
     data: {
       name: 'Super Admin',
@@ -18,7 +18,11 @@ async function script() {
           name: 'superadmin',
           permissions: {
             createMany: {
-              data: [{ name: 'user', access: 'readwriteanddelete' }],
+              data: [
+                { name: 'user', access: 'readwriteanddelete' },
+                { name: 'permission', access: 'readwriteanddelete' },
+                { name: 'role', access: 'readwriteanddelete' },
+              ],
             },
           },
         },

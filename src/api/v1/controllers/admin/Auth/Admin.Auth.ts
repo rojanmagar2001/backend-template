@@ -1,4 +1,4 @@
-import AdminAuthService from '@/api/v1/services/admin/Auth/Auth.Service';
+import Service from '@/api/v1/services/admin/Auth/Auth.Service';
 import asyncHandler from '@/handlers/async.handler';
 import HttpResponse from '@/utils/HttpResponse';
 import { type Request, type Response } from 'express';
@@ -6,7 +6,7 @@ import { type Request, type Response } from 'express';
 const login = asyncHandler(async (req: Request, res: Response) => {
   const postData = req.body;
 
-  const data = await AdminAuthService.login(postData);
+  const data = await Service.login(postData);
 
   res.cookie('access-token', data.token, {
     secure: true,
@@ -17,7 +17,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 
   return res.send(
     new HttpResponse({
-      message: 'User successfully logged in',
+      message: 'User logged in successfully',
       data: data.permissions,
     }),
   );

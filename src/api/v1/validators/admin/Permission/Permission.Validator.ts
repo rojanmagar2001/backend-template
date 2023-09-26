@@ -12,4 +12,14 @@ export const PermissionCreateSchema = z.object({
     .strict(),
 });
 
+export const PermissionUpdateSchema = z.object({
+  body: z
+    .object({
+      name: z.nativeEnum(PERMISSION, { required_error: 'Name is required' }).optional(),
+      access: z.nativeEnum(AccessRight, { required_error: 'Access is required' }).optional(),
+    })
+    .strict(),
+});
+
 export type PermissionCreateInput = z.infer<typeof PermissionCreateSchema>['body'];
+export type PermissionUpdateInput = z.infer<typeof PermissionUpdateSchema>['body'];

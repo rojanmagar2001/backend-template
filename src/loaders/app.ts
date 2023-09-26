@@ -9,6 +9,7 @@ import AdminPermissionRoutes from '@/api/v1/routes/admin/Permission/Permission.R
 import AdminRoleRoutes from '@/api/v1/routes/admin/Role/Role.Routes';
 import AdminUserRoutes from '@/api/v1/routes/admin/User/User.Routes';
 import AdminAuthRoutes from '@/api/v1/routes/admin/Auth/Auth.Routes';
+import AdminProfileRoutes from '@/api/v1/routes/admin/Profile/Profile.Routes';
 
 const app = express();
 
@@ -72,7 +73,7 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 // ?Admin Routes
-app.use('/api/v1/admin', AdminPermissionRoutes, AdminRoleRoutes, AdminUserRoutes, AdminAuthRoutes);
+app.use('/api/v1/admin', AdminPermissionRoutes, AdminRoleRoutes, AdminUserRoutes, AdminAuthRoutes, AdminProfileRoutes);
 
 app.use(errorMiddleware);
 

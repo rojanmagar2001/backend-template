@@ -7,6 +7,17 @@ export interface CreateParams<T> {
   loggedUserData?: LoggedUserData;
 }
 
+export interface UpdateParams<T> {
+  id: string;
+  postData: T;
+  loggedUserData?: LoggedUserData;
+}
+
+export interface DeleteParams {
+  id: string;
+  loggedUserData?: LoggedUserData;
+}
+
 export interface GetParams {
   id: string;
 }
