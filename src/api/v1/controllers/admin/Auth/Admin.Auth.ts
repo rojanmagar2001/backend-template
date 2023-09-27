@@ -12,14 +12,14 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     secure: true,
     sameSite: 'lax',
     httpOnly: true,
-    maxAge: 604800000, // 7 days
+    maxAge: 900000, // 15 min
   });
 
   res.cookie('refresh-token', data.refreshToken, {
     secure: true,
     sameSite: 'lax',
     httpOnly: true,
-    maxAge: 2 * 604800000,
+    maxAge: 1296000000, // 15 day
   });
 
   return res.send(
@@ -30,6 +30,48 @@ const login = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
-const AdminAuthController = { login };
+const logout = asyncHandler(async (req: Request, res: Response) => {
+  const token = req.cookies['refresh-token'];
+  const loggedUserData = res.locals.user;
+
+  await Service.logout({ loggedUserData, token });
+
+  res.clearCookie('access-token');
+  res.clearCookie('refresh-token');
+
+  return res.send(
+    new HttpResponse({
+      message: 'User logged out successfully',
+    }),
+  );
+});
+
+const refresh = asyncHandler(async (req: Request, res: Response) => {
+  const token = req.cookies['refresh-token'];
+
+  const data = await Service.refresh({ token });
+
+  res.cookie('access-token', data.accessToken, {
+    secure: true,
+    sameSite: 'lax',
+    httpOnly: true,
+    maxAge: 900000, // 15 min
+  });
+
+  res.cookie('refresh-token', data.refreshToken, {
+    secure: true,
+    sameSite: 'lax',
+    httpOnly: true,
+    maxAge: 1296000000, // 15 day
+  });
+
+  return res.send(
+    new HttpResponse({
+      message: 'Token refreshed successfully',
+    }),
+  );
+});
+
+const AdminAuthController = { login, logout, refresh };
 
 export default AdminAuthController;

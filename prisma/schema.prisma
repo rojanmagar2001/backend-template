@@ -56,6 +56,7 @@ model User {
   image             String?
   role              Role         @relation(fields: [roleId], references: [id], onDelete: Restrict)
   roleId            Int
+  token             String[]
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
   createdBy         User?        @relation("UserCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)

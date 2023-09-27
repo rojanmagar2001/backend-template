@@ -13,5 +13,5 @@ export function generateToken(data: GenerateTokenProps) {
     return jwt.sign({ id }, JWT_ACCESS_SECRET, { expiresIn: '15m' });
   }
 
-  return jwt.sign({ id }, JWT_REFRESH_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ id }, JWT_REFRESH_SECRET, { expiresIn: '15d' });
 }
