@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 
-export const AdminPrisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 // export const ClientPrisma = new PrismaClient();

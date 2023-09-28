@@ -6,7 +6,7 @@ import {
   type GetParams,
   type DeleteParams,
 } from '@/interfaces/services/Admin.Interface';
-import { AdminPrisma } from '@/loaders/prisma';
+import { prisma } from '@/loaders/prisma';
 import HttpException from '@/utils/HttpException';
 import { getPageDocs, pagination } from '@/utils/Pagination';
 import { toNumber } from '@/utils/Params';
@@ -19,7 +19,7 @@ const create = async (data: CreateParams<UserCreateInput>) => {
   const username = postData.username.toLowerCase();
   const email = postData.email.toLowerCase();
 
-  const alreadyExist = await AdminPrisma.user.findFirst({
+  const alreadyExist = await prisma.user.findFirst({
     where: {
       OR: [{ username }, { email }],
     },
@@ -33,7 +33,7 @@ const create = async (data: CreateParams<UserCreateInput>) => {
 
   const password = await bcrypt.hash(postData.password, 10);
 
-  const user = await AdminPrisma.user.create({
+  const user = await prisma.user.create({
     data: {
       ...postData,
       name,
@@ -57,14 +57,14 @@ const getAll = async (data: GetAllParams) => {
   const { page, limit, skip } = pagination(data);
 
   const [users, count] = await Promise.all([
-    AdminPrisma.user.findMany({
+    prisma.user.findMany({
       orderBy: {
         createdAt: 'desc',
       },
       take: limit,
       skip,
     }),
-    AdminPrisma.user.count(),
+    prisma.user.count(),
   ]);
 
   const docs = getPageDocs({ page, limit, count });
@@ -77,7 +77,7 @@ const getById = async (data: GetParams) => {
 
   if (!id) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid User Id');
 
-  const user = await AdminPrisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id,
     },
@@ -117,7 +117,7 @@ const deleteById = async (data: DeleteParams) => {
 
   if (id === data.loggedUserData?.id) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Cannot delete your own account');
 
-  const validUser = await AdminPrisma.user.findUnique({
+  const validUser = await prisma.user.findUnique({
     where: {
       id,
     },
@@ -125,7 +125,7 @@ const deleteById = async (data: DeleteParams) => {
 
   if (!validUser) throw new HttpException(HTTPSTATUS.NOTFOUND, 'User does not exist');
 
-  const user = await AdminPrisma.user.delete({
+  const user = await prisma.user.delete({
     where: {
       id,
     },

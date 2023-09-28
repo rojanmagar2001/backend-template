@@ -2,7 +2,7 @@ import { HTTPSTATUS } from '@/enums/HttpStatus.enum';
 import HttpException from '@/utils/HttpException';
 import jwt from 'jsonwebtoken';
 import { type NextFunction, type Request, type Response } from 'express';
-import { AdminPrisma } from '@/loaders/prisma';
+import { prisma } from '@/loaders/prisma';
 import { JWT_ACCESS_SECRET } from '@/loaders/env';
 
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +12,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
     try {
       const decode = jwt.verify(token, JWT_ACCESS_SECRET) as { id: number };
 
-      const user = await AdminPrisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: { id: decode.id },
         select: {
           id: true,
@@ -46,7 +46,7 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
   try {
     if (!loggedUser.id) throw new HttpException(HTTPSTATUS.UNAUTHORIZED, 'Not Authorized');
 
-    const user = await AdminPrisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         id: loggedUser.id,
       },

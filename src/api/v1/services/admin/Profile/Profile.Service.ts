@@ -1,7 +1,7 @@
 import { type PasswordUpdateInput, type ProfileUpdateInput } from '@/api/v1/validators/admin/Profile/Profile.Validator';
 import { HTTPSTATUS } from '@/enums/HttpStatus.enum';
 import { type UpdateParams, type GetParams } from '@/interfaces/services/Admin.Interface';
-import { AdminPrisma } from '@/loaders/prisma';
+import { prisma } from '@/loaders/prisma';
 import HttpException from '@/utils/HttpException';
 import { toNumber } from '@/utils/Params';
 import bcrypt from 'bcrypt';
@@ -11,7 +11,7 @@ const getById = async (data: GetParams) => {
 
   if (!id) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid User Id');
 
-  const profile = await AdminPrisma.user.findUnique({
+  const profile = await prisma.user.findUnique({
     where: {
       id,
     },
@@ -45,7 +45,7 @@ const updateById = async (data: UpdateParams<ProfileUpdateInput>) => {
 
   if (!id) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid User Id');
 
-  const validProfile = await AdminPrisma.user.findUnique({
+  const validProfile = await prisma.user.findUnique({
     where: {
       id,
     },
@@ -63,7 +63,7 @@ const updateById = async (data: UpdateParams<ProfileUpdateInput>) => {
     if (isNaN(dob.getTime())) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid Date of Birth');
   }
 
-  const profile = await AdminPrisma.user.update({
+  const profile = await prisma.user.update({
     where: {
       id,
     },
@@ -87,7 +87,7 @@ const updatePassword = async (data: UpdateParams<PasswordUpdateInput>) => {
 
   if (!id) throw new HttpException(HTTPSTATUS.BADREQUEST, 'Invalid User Password');
 
-  const validProfile = await AdminPrisma.user.findUnique({
+  const validProfile = await prisma.user.findUnique({
     where: {
       id,
     },
@@ -105,7 +105,7 @@ const updatePassword = async (data: UpdateParams<PasswordUpdateInput>) => {
 
   const password = await bcrypt.hash(postData.password, 10);
 
-  const profile = await AdminPrisma.user.update({
+  const profile = await prisma.user.update({
     where: {
       id,
     },

@@ -2,7 +2,7 @@ import { type UserLoginInput } from '@/api/v1/validators/admin/Auth/Auth.Validat
 import { HTTPSTATUS } from '@/enums/HttpStatus.enum';
 import { type LoggedUserData } from '@/interfaces/services/Admin.Interface';
 import { JWT_REFRESH_SECRET } from '@/loaders/env';
-import { AdminPrisma } from '@/loaders/prisma';
+import { prisma } from '@/loaders/prisma';
 import HttpException from '@/utils/HttpException';
 import { generateToken } from '@/utils/JWT';
 import bcrypt from 'bcrypt';
@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 const login = async (data: UserLoginInput) => {
   const { user, password } = data;
 
-  const validUser = await AdminPrisma.user.findFirst({
+  const validUser = await prisma.user.findFirst({
     where: {
       OR: [{ username: user }, { email: user }],
     },
@@ -54,7 +54,7 @@ interface TokenPayload {
 const logout = async (data: { loggedUserData: LoggedUserData; token: string }) => {
   const { loggedUserData } = data;
 
-  const user = await AdminPrisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: loggedUserData.id,
     },
@@ -75,7 +75,7 @@ const logout = async (data: { loggedUserData: LoggedUserData; token: string }) =
     }
   });
 
-  await AdminPrisma.user.update({
+  await prisma.user.update({
     where: {
       id: loggedUserData.id,
     },
@@ -89,7 +89,7 @@ const refresh = async (data: { token: string }) => {
   try {
     const decoded = jwt.verify(data.token, JWT_REFRESH_SECRET) as TokenPayload;
 
-    const validUser = await AdminPrisma.user.findUnique({
+    const validUser = await prisma.user.findUnique({
       where: {
         id: decoded.id,
       },
@@ -115,7 +115,7 @@ const refresh = async (data: { token: string }) => {
     });
     token.push(data.token);
 
-    const user = await AdminPrisma.user.update({
+    const user = await prisma.user.update({
       where: {
         id: decoded.id,
       },
